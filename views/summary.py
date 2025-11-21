@@ -73,13 +73,15 @@ df['WorkDate'] = pd.to_datetime(df['WorkDate'], format='%Y-%m-%d')
 df['WorkDate'] = df['WorkDate'].dt.date
 
 df['Attn_P'] = df.apply(
-    lambda row: 0.9 if df['Fty'] == 'NT1' and df['WorkDate'] < date(2025,11,10)
-    else 0.91 if df['Fty'] in ['NT2','NT3'] and df['WorkDate'] >= date(2025,5,1) 
-    else 0.93 if df['Fty'] in ['NT2','NT3'] 
+    lambda 
+    row: 0.9 if (row['Fty'] == 'NT1' and row['WorkDate'] < date(2025,11,10))
+    else 0.91 if (row['Fty'] in ['NT2','NT3'] and row['WorkDate'] >= date(2025,5,1))
+    else 0.93 if (row['Fty'] in ['NT2','NT3'])
     else 0.95, 
     axis=1)
 df['Total_hours_P'] = df['Hours_P'] * df['Worker_P'] * df['Attn_P']
 df['WS*Hours_A'] = df['Worker_A']*df['Hours_A']
+# Lưu df ra file để kiểm tra
 
 ###########################
 fty = ['NT1','NT2', 'NT3']
@@ -159,7 +161,7 @@ data = {
     'Số giờ làm việc': [f'{Hour_P:,.1f}', f'{Hour_A:,.1f}'],
     'SAH/CN/Ngày': [f'{SAH_CN_P:,.1f}', f'{SAH_CN_A:,.1f}']
 }
-
+# df4.to_excel("df_summary_check.xlsx",index=False)
 summary_df = pd.DataFrame(data, index=['Kế hoạch', 'Thực tế'])
 
 # Hàm export Excel
