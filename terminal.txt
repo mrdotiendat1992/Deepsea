@@ -1,0 +1,9 @@
+py -3.12 -m venv deepsea_env
+
+deepsea_env\Scripts\activate
+
+streamlit run reports.py
+
+pip freeze > requirements.txt
+
+pip install -r requirements.txt
