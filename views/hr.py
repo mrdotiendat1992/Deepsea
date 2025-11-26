@@ -16,6 +16,15 @@ st.markdown(
         color: 'rgb(255,255,255)';
         font-size : 48px;
     }
+    div[data-testid="stMetricValue"] {
+        font-size: 20px; /* chỉnh kích thước chữ value */
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 14px; /* chỉnh kích thước chữ label */
+    }
+    div[data-testid="stMetricDelta"] {
+        font-size: 12px; /* chỉnh kích thước chữ delta */
+    }
     div.block-container{padding-top:1.5rem};
     </style>
     """,

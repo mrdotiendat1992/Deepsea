@@ -103,7 +103,11 @@ styles = df[
 sel_style = st.sidebar.multiselect("Chọn Style:",options=styles,default=styles)
 
 df_ppc = get_data("DW",f"SELECT * FROM PPC WHERE WORKDATE between '{start_date}' and '{end_date}' and line not like '%F%'")
-df_ppc['Attn'] = df_ppc['Line'].apply(lambda x: 0.9 if str(x)[:1] == '1' else 0.93)
+df_ppc['Attn'] = df_ppc.apply(
+    lambda x: 0.9 if str(x['Line'])[:1] == '1' and x['WorkDate'] < date(2025,11,10)
+    else 0.91 if str(x['Line'])[:1] in ['2','3'] and x['WorkDate'] >= date(2025,5,1)
+    else 0.93 if str(x['Line'])[:1] in ['2','3']
+    else 0.95, axis=1)
 df_ppc['Total_hours_P'] = df_ppc['Hours_P'] * df_ppc['Worker_P'] * df_ppc['Attn']
 df_ppc['Eff'] = df_ppc['SAH_P']/df_ppc['Total_hours_P']
 df_ppc['Fty'] = 'NT' + df_ppc['Line'].str[:1]
