@@ -460,7 +460,21 @@ df_line_SAM = pd.pivot(df4, index=['Line'], columns=['WorkDate'],values='SAM')
 #Ghép các bảng pivot vào thành bảng chiều dùng làm customdata
 
 df_line_eff_pivot = df_line_eff_pivot.fillna(0)
-customdata = np.dstack([df_line_style.values, df_line_SAH.values,df_line_link_anh.values,df_line_SAM, df_line_eff_pivot, df_line_eff_pivot_ppc, df_line_SAH_ppc])
+base_index = df_line_style.index
+
+df_line_SAH          = df_line_SAH.reindex(base_index)
+df_line_link_anh     = df_line_link_anh.reindex(base_index)
+df_line_SAM          = df_line_SAM.reindex(base_index)
+df_line_eff_pivot    = df_line_eff_pivot.reindex(base_index)
+df_line_eff_pivot_ppc = df_line_eff_pivot_ppc.reindex(base_index)
+df_line_SAH_ppc      = df_line_SAH_ppc.reindex(base_index)
+customdata = np.dstack([df_line_style.values, 
+                        df_line_SAH.values,
+                        df_line_link_anh.values,
+                        df_line_SAM, 
+                        df_line_eff_pivot, 
+                        df_line_eff_pivot_ppc,
+                        df_line_SAH_ppc])
 
 df_actual = df_line_eff_pivot.astype(float)
 df_plan = df_line_eff_pivot_ppc.astype(float)

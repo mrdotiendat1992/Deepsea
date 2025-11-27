@@ -156,7 +156,7 @@ WD = df_ppc['WorkDate'].nunique()
 SAH_CN = Total_SAH/Workers
 Attn = df_ppc['Attn'].mean()
 
-st.subheader(f"Mục tiêu nhà máy {", ".join(sel_fty)}")
+st.subheader(f"Mục tiêu nhà máy {', '.join(sel_fty)}")
 cols = st.columns(4)
 with cols[0]:
     st.metric("Tổng SAH",value=f"{Total_SAH:,.0f}")
