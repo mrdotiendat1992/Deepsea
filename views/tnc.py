@@ -22,9 +22,10 @@ st.markdown(f'<h1 class="centered-title">BÁO CÁO HIỆU SUẤT CÔNG NHÂN TNC
 
 nha_may = st.sidebar.selectbox("Chọn nhà máy",options=['NT1','NT2'])
 df_tnc = get_data("INCENTIVE",f"SELECT * FROM HIEU_SUAT_CN_TNC01 WHERE CHUYEN <> '' AND SO_NGAY <=90 AND NHA_MAY = '{nha_may}' ORDER BY NGAY desc")
-df_tnc['Năm'] = df_tnc['NGAY'].str[:4]
-df_tnc['Tháng'] = df_tnc['NGAY'].str[5:7]
-df_tnc['Ngày'] = df_tnc['NGAY'].str[-2:]
+df_tnc['NGAY'] = pd.to_datetime(df_tnc['NGAY'])
+df_tnc['Năm'] = df_tnc['NGAY'].dt.year.astype(str)
+df_tnc['Tháng'] = df_tnc['NGAY'].dt.month.astype(str).str.zfill(2)
+df_tnc['Ngày'] = df_tnc['NGAY'].dt.day.astype(str).str.zfill(2)
 
 ds_nam = df_tnc['Năm'].sort_values(ascending=False).unique()
 nam = st.sidebar.selectbox("Chọn năm",options=ds_nam)

@@ -35,9 +35,9 @@ df_chuyen = get_data("INCENTIVE","""
                      ORDER BY WORKDATE,LINE
                      """)
 
-df_chuyen['NAM'] = df_chuyen['NGAY'].str[:4]
-df_chuyen['THANG'] = df_chuyen['NGAY'].str[5:7]
-df_chuyen['NGAY'] = pd.to_datetime(df_chuyen['NGAY'],format="%Y-%m-%d")
+df_chuyen['NGAY'] = pd.to_datetime(df_chuyen['NGAY'], format='%Y-%m-%d')
+df_chuyen['NAM'] = df_chuyen['NGAY'].dt.year.astype(str)
+df_chuyen['THANG'] = df_chuyen['NGAY'].dt.month.astype(str).str.zfill(2)
 ds_nam = sorted(df_chuyen['NAM'].unique(),reverse =True)
 nam = st.sidebar.selectbox("Chọn năm",options=ds_nam)
 ds_thang = sorted(df_chuyen[df_chuyen['NAM'] == nam]['THANG'].unique(),reverse=True)
@@ -76,14 +76,14 @@ df_cong_nhan = get_data("INCENTIVE","""
                         """)
 
 df_cong_nhan['NHA_MAY'] = 'NT' + df_cong_nhan['CHUYEN'].str[:1]
-df_cong_nhan['NAM'] = df_cong_nhan['NGAY'].str[:4]
-df_cong_nhan['THANG'] = df_cong_nhan['NGAY'].str[5:7]
-df_cong_nhan['NGAY'] = pd.to_datetime(df_cong_nhan['NGAY'])
+df_cong_nhan['NGAY'] = pd.to_datetime(df_cong_nhan['NGAY'], format='%Y-%m-%d')
+df_cong_nhan['NAM'] = df_cong_nhan['NGAY'].dt.year.astype(str)
+df_cong_nhan['THANG'] = df_cong_nhan['NGAY'].dt.month.astype(str).str.zfill(2)
 df_cong_nhan = df_cong_nhan.query("NAM == @nam and THANG == @thang and NGAY >= @tu_ngay and NGAY <=@den_ngay")
 df_cong_nhan = df_cong_nhan[df_cong_nhan['NHA_MAY'].isin(nha_may)]
 ###
 ## tính toán theo xưởng
-df_xuong = df_chuyen[['CHUYEN','SAH','TGLV','TONG_THUONG']]
+df_xuong = df_chuyen[['CHUYEN','SAH','TGLV','TONG_THUONG']].copy()
 df_xuong['XUONG'] = df_xuong['CHUYEN'].str[:1] + 'P0' + df_xuong['CHUYEN'].str[1:2]
 df_ten_xuong = pd.DataFrame({'XUONG' : ['1P01','1P02','2P01','2P02','2P03','2P04'],\
                 'TEN_XUONG' : ['🦁Sư tử','🦅Đại bàng','🐲Rồng vàng','🐜Kiến lửa','🐺Sói đêm','🦓Ngựa vằn']})
@@ -95,8 +95,9 @@ df_oql['NHA_MAY'] = 'NT' + df_oql['CHUYEN'].str[:1]
 df_oql['CODE'] = df_oql['CHUYEN'].str[2:-2]
 df_oql['NHOM'] = df_oql['CODE'].apply(lambda x: 'Cắt' if x == 'C' else 'May' if x == 'S' else 'QC May' if x == 'QC1'
                               else 'Là' if x == 'I' else 'QC Là' if x == 'QC2' else 'Hoàn thiện' if x == 'F' else '')
-df_oql['THANG'] = df_oql['NGAY'].str[5:7]
-df_oql['NAM'] = df_oql['NGAY'].str[:4]
+df_oql['NGAY'] = pd.to_datetime(df_oql['NGAY'], format='%Y-%m-%d')
+df_oql['THANG'] = df_oql['NGAY'].dt.month.astype(str).str.zfill(2)
+df_oql['NAM'] = df_oql['NGAY'].dt.year.astype(str)
 df_oql.pop('CODE')
 #di chuyển cột
 move_col = df_oql.pop('NHA_MAY')
