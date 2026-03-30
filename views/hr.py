@@ -89,7 +89,13 @@ with cols[2]:
         st.metric(label="Có tay nghề",value= f'{cn_tnc01:,.0f}')
 with cols[3]:
     cn_dilam = df_dilam['Gio_vao'].count()
-    cn_may_dilam = df_dilam[(df_dilam['Chuc_vu'] == "Công nhân may công nghiệp") & (~df_dilam['Chuyen_to'].str.contains('TNC01'))]['Gio_vao'].count()
+    cn_may_dilam = df_dilam[
+    df_dilam['Chuc_vu'].isin([
+            "Công nhân may công nghiệp",
+            "Công nhân vận hành máy may công nghiệp"
+        ])
+        & (~df_dilam['Chuyen_to'].str.contains('TNC01', na=False))
+    ]['Gio_vao'].count()
     st.info('Công nhân đi làm hôm nay',icon= "🏃" )
     col1,col2 = st.columns(2)
     with col1:      
@@ -376,7 +382,7 @@ df_tuyen_moi = get_data("HR",
 df_tuyen_moi['nhom_tuoi'] = df_tuyen_moi['TUOI'].apply(lambda x: "Trên 45 tuổi" if x > 45 else "36-45 tuổi" if x > 35 else "26-35 tuổi" if x > 25 else "18-25 tuổi")
 df_tuyen_moi['Phan_loai'] = df_tuyen_moi['CHUC_DANH'] .apply(
     lambda x: "Công nhân may" if (
-        (x == 'Công nhân may công nghiệp') or 
+        (x == 'Công nhân may công nghiệp') or (x == 'Công nhân vận hành máy may công nghiệp')
         (x == 'Công nhân thử việc may')
     ) else "Khác"
 )
@@ -457,7 +463,7 @@ df_nghi_viec = get_data("HR",
 df_nghi_viec['Thâm niên'] = df_nghi_viec['SO_NGAY'].apply(lambda x: "Trên 1 năm" if x > 365 else "6-12 tháng" if x > 182 else "3-6 tháng" if x > 91 else "1-3 tháng" if x >30 else "Dưới 1 tháng")
 df_nghi_viec['Phan_loai'] = df_nghi_viec['CHUC_DANH'] .apply(
     lambda x: "Công nhân may" if (
-        (x == 'Công nhân may công nghiệp') or 
+        (x == 'Công nhân may công nghiệp') or (x == 'Công nhân vận hành máy may công nghiệp')
         (x == 'Công nhân thử việc may')
     ) else "Khác"
 )
