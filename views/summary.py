@@ -430,8 +430,20 @@ df_SAM = get_data("INCENTIVE","""
 df_SAM['TU_NGAY'] = pd.to_datetime(df_SAM['TU_NGAY'])
 df_SAM['DEN_NGAY'] = pd.to_datetime(df_SAM['DEN_NGAY'])
 #Ghép bảng df4 và bảng SAM
-df4 = pd.merge(df4,df_SAM,on='Style_P',how='left')
-df4 = df4[(df4['WorkDate'] >= df4['TU_NGAY']) & (df4['WorkDate'] <= df4['DEN_NGAY'])]
+df4 = pd.merge(df4, df_SAM, on='Style_P', how='left')
+
+df4["valid_sam"] = (
+    (df4["WorkDate"] >= df4["TU_NGAY"]) &
+    (df4["WorkDate"] <= df4["DEN_NGAY"])
+)
+
+df4 = (
+    df4.sort_values("valid_sam", ascending=False)
+       .drop_duplicates(
+           subset=["Line","WorkDate","Style_P"],
+           keep="first"
+       )
+)
 df4 = df4.groupby(['Line', 'WorkDate', 'Style_P'], as_index=False).agg({
     'SAM': 'sum',  
     **{col: 'first' for col in df4.columns if col not in ['Line', 'WorkDate', 'Style_P', 'SAM']} 
