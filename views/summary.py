@@ -136,16 +136,15 @@ df_ppc = df_ppc[(df_ppc['Unit'].isin(sel_unit)) &
 Qty_A = df4[df4['Line'] != '11S02']['Qty_A'].sum()
 Qty_A = df4['Qty_A'].sum()
 Qty_P = df4['Qty_P'].sum()
-# SAH_A = df4['SAH_A'].sum() 
+SAH_A = df4['SAH_A'].sum() 
 SAH_P = df4['SAH_P'].sum()
-# Total_hours_A = df4['Total_hours_A'].sum() 
+Total_hours_A = df4['Total_hours_A'].sum() 
 Total_hours_P = df4['Total_hours_P'].sum()
-# Bỏ các chuyền là sinh viên thực tập không tính diệu suất
 exclude_lines = ['23S01', '23S03', '23S05', '23S07', '23S09']
 df_eff = df4[~df4['Line'].str.upper().isin(exclude_lines)]
-SAH_A = df_eff['SAH_A'].sum()
-Total_hours_A = df_eff['Total_hours_A'].sum()
-Eff_A = SAH_A / Total_hours_A if Total_hours_A > 0 else 0
+SAH_A_NOTX3 = df_eff['SAH_A'].sum()
+Total_hours_A_NOTX3 = df_eff['Total_hours_A'].sum()
+Eff_A = SAH_A_NOTX3/Total_hours_A_NOTX3
 Eff_P = SAH_P/Total_hours_P
 Attn_A = df4['Total_hours_A'].sum()/(df4['WS*Hours_A']).sum()
 Attn_P = df4['Attn_P'].mean()
