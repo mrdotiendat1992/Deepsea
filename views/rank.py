@@ -86,7 +86,7 @@ df_cong_nhan = df_cong_nhan[df_cong_nhan['NHA_MAY'].isin(nha_may)]
 df_xuong = df_chuyen[['CHUYEN','SAH','TGLV','TONG_THUONG']].copy()
 df_xuong['XUONG'] = df_xuong['CHUYEN'].str[:1] + 'P0' + df_xuong['CHUYEN'].str[1:2]
 df_ten_xuong = pd.DataFrame({'XUONG' : ['1P01','1P02','2P01','2P02','2P03','2P04'],\
-                'TEN_XUONG' : ['🦁Sư tử','🦅Đại bàng','🐲Rồng vàng','🐜Kiến lửa','🐺Sói đêm','🦓Ngựa vằn']})
+                'TEN_XUONG' : ['🦁Sư tử','🦅Đại bàng','🐲Rồng vàng','🐜Kiến lửa','🐝 Ong vàng','🦓Ngựa vằn']})
 df_xuong = df_xuong.merge(df_ten_xuong,on='XUONG',how='left')
 # df_xuong
 df_oql = get_data('INCENTIVE',"SELECT * FROM TI_LE_LOI WHERE NGAY < CAST(GETDATE() AS DATE) AND NGAY >= '2024-09-01'")
