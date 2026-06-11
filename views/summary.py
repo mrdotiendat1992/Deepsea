@@ -143,9 +143,9 @@ Total_hours_P = df4['Total_hours_P'].sum()
 
 # Tính hiệu suất loại bỏ chuyền 23S01, 23S03, 23S05, 23S07, 23S09 là các chuyền của học sinh
 exclude_lines = ['23S01', '23S03', '23S05', '23S07', '23S09']
-df_eff = df4[~df4['Line'].str.upper().isin(exclude_lines)]
-SAH_A_NOTX3 = df_eff['SAH_A'].sum()
-Total_hours_A_NOTX3 = df_eff['Total_hours_A'].sum()
+df4_not_p3 = df4[~df4['Line'].str.upper().isin(exclude_lines)]
+SAH_A_NOTX3 = df4_not_p3['SAH_A'].sum()
+Total_hours_A_NOTX3 = df4_not_p3['Total_hours_A'].sum()
 Eff_A = SAH_A_NOTX3/Total_hours_A_NOTX3
 
 Eff_P = SAH_P/Total_hours_P
@@ -235,7 +235,7 @@ with cols[3]:
     st.metric(label= 'Thực tế',value= f'{SAH_CN_A:,.1f}',delta=f'{(SAH_CN_A-SAH_CN_P):,.1f}')
 # df5 = nhóm theo ngày    
 st.markdown("---")
-df5 = df4.groupby(by=df4['WorkDate']).agg({
+df5 = df4_not_p3.groupby(by=df4_not_p3['WorkDate']).agg({
 'Qty_A' : 'sum',
 'Qty_P' : 'sum',
 'SAH_A' : 'sum',
