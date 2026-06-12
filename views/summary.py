@@ -235,7 +235,20 @@ with cols[3]:
     st.metric(label= 'Thực tế',value= f'{SAH_CN_A:,.1f}',delta=f'{(SAH_CN_A-SAH_CN_P):,.1f}')
 # df5 = nhóm theo ngày    
 st.markdown("---")
-df5 = df4_not_p3.groupby(by=df4_not_p3['WorkDate']).agg({
+df5_not_p3 = df4_not_p3.groupby(by=df4_not_p3['WorkDate']).agg({
+'Qty_A' : 'sum',
+'Qty_P' : 'sum',
+'SAH_A' : 'sum',
+'SAH_P' : 'sum',
+'Total_hours_A' : 'sum',
+'Total_hours_P' : 'sum'
+    }).reset_index()
+
+df5_not_p3['SAH_A_formated']= df5_not_p3['SAH_A'].apply(lambda x: f"{x:,.0f}")
+df5_not_p3 = df5_not_p3.sort_values('WorkDate')
+
+
+df5 = df4.groupby(by=df4['WorkDate']).agg({
 'Qty_A' : 'sum',
 'Qty_P' : 'sum',
 'SAH_A' : 'sum',
