@@ -348,6 +348,8 @@ df_unit_eff = df4.groupby(by = ['Unit']).agg({
     'SAH_P' : 'sum',
     'Total_hours_P' : 'sum'
 },axis = 1).reset_index()
+
+print(df_unit_eff)
 df_unit_eff['Eff_A'] = (df_unit_eff['SAH_A']/df_unit_eff['Total_hours_A'])
 df_unit_eff['Eff_A_formated'] = df_unit_eff['Eff_A'].apply(lambda x: f"{x:.1%}")
 df_unit_eff['Eff_P'] = (df_unit_eff['SAH_P']/df_unit_eff['Total_hours_P'])

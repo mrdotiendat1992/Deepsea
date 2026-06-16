@@ -86,7 +86,7 @@ with cols[2]:
     with col1:      
         st.metric(label="Thử việc may",value= f'{cn_tnc00:,.0f}')
     with col2: 
-        st.metric(label="Có tay nghề",value= f'{cn_tnc01D:,.0f}')
+        st.metric(label="Có tay nghề",value= f'{cn_tnc01:,.0f}')
 with cols[3]:
     cn_dilam = df_dilam['Gio_vao'].count()
     cn_may_dilam = df_dilam[
