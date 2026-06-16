@@ -167,22 +167,44 @@ with cols[1]:
 
     st.plotly_chart(fig,use_container_width=True,config= config)
 with cols[2]:
-    df_danglamviec_dropna = df_danglamviec.dropna(subset=['Tinh_TP', 'Quan_huyen'])
-    df_danglamviec_dropna['Tinh_TP'] = df_danglamviec_dropna['Tinh_TP'].str.replace(r'Tỉnh|tỉnh','',regex=True)
-    df_danglamviec_dropna['Quan_huyen'] = df_danglamviec_dropna['Quan_huyen'].str.replace(r'Huyện|huyện','',regex=True)
-    df_danglamviec_dropna['Tinh_TP'] = df_danglamviec_dropna['Tinh_TP'].str.strip()
-    df_danglamviec_dropna['Quan_huyen'] = df_danglamviec_dropna['Quan_huyen'].str.strip()
+
+    df_danglamviec_dropna = df_danglamviec.dropna(
+        subset=['Tinh_TP', 'Quan_huyen', 'Phuong_xa']
+    ).copy()
+
+    df_danglamviec_dropna['Tinh_TP'] = (
+        df_danglamviec_dropna['Tinh_TP']
+        .str.replace(r'Tỉnh|tỉnh', '', regex=True)
+        .str.strip()
+    )
+
+    df_danglamviec_dropna['Quan_huyen'] = (
+        df_danglamviec_dropna['Quan_huyen']
+        .str.replace(r'Huyện|huyện', '', regex=True)
+        .str.strip()
+    )
+
+    df_danglamviec_dropna['Phuong_xa'] = (
+        df_danglamviec_dropna['Phuong_xa']
+        .str.strip()
+    )
+
     fig = px.treemap(
         df_danglamviec_dropna,
-        path= ['Tinh_TP','Quan_huyen','Phuong_xa'],
-        values ='count'             
+        path=['Tinh_TP', 'Quan_huyen', 'Phuong_xa'],
+        values='count'
     )
-    fig.update_layout(
-        title = "Phân bổ theo địa lý",
-    ) 
-    fig.update_layout(dragmode="pan")
 
-    st.plotly_chart(fig,use_container_width=True,config= config)
+    fig.update_layout(
+        title="Phân bổ theo địa lý",
+        dragmode="pan"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config=config
+    )
 
 st.markdown("---")
 st.subheader("Xu hướng biến động nhân sự")
