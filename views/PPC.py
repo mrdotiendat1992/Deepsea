@@ -34,7 +34,7 @@ sel_fty = st.sidebar.multiselect("Chọn nhà máy:",options = fty,default=fty)
 df_ppc = get_data("DW",f"SELECT * FROM PPC WHERE WORKDATE >= '2024-09-01' ORDER BY WORKDATE DESC,LINE")
 df_ppc['Attn'] = df_ppc.apply(
     lambda x: 0.9 if str(x['Line'])[:1] == '1' and x['WorkDate'] < date(2025,11,10)
-    else 0.91 if str(x['Line'])[:1] in ['2','3'] and x['WorkDate'] >= date(2025,5,1)
+    else 0.96 if str(x['Line'])[:1] in ['2','3'] and x['WorkDate'] >= date(2025,5,1)
     else 0.93 if str(x['Line'])[:1] in ['2','3']
     else 0.95, axis=1)
 df_ppc['Total_hours_P'] = df_ppc['Hours_P'] * df_ppc['Worker_P'] * df_ppc['Attn']
