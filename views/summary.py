@@ -141,20 +141,10 @@ SAH_P = df4['SAH_P'].sum()
 Total_hours_A = df4['Total_hours_A'].sum() 
 Total_hours_P = df4['Total_hours_P'].sum()
 
-# ============================================================================
-# KHAI BÁO HỌC SINH (loại khỏi tính toán hiệu suất - không dùng để tính thưởng)
-# Hai biến dưới đây quản lý ở CÙNG MỘT CHỖ:
-#   - exclude_lines : cấp CHUYỀN. Danh sách các chuyền học sinh cụ thể.
-#                     Dùng để loại khỏi HIỆU SUẤT TỔNG (Eff_A) qua df4_not_p3.
-#   - student_units : cấp XƯỞNG. Danh sách các xưởng học sinh.
-#                     Dùng để ẩn khỏi BIỂU ĐỒ "Hiệu suất theo xưởng" (df_unit_eff_perf).
-# Lưu ý: 2P03 là xưởng thuần học sinh, gồm đúng các chuyền trong exclude_lines.
-# ============================================================================
-exclude_lines = ['23S01', '23S03', '23S05', '23S07', '23S09']
+# Xưởng học sinh — loại khỏi MỌI tính toán hiệu suất (không dùng để tính thưởng).
+# Khai báo một lần ở đây, dùng chung cho cả hiệu suất tổng (Eff_A) và biểu đồ "Hiệu suất theo xưởng".
 student_units = ['2P03']
-
-# Hiệu suất tổng: loại các chuyền học sinh (cấp chuyền)
-df4_not_p3 = df4[~df4['Line'].str.upper().isin(exclude_lines)]
+df4_not_p3 = df4[~df4['Unit'].isin(student_units)]
 SAH_A_NOTX3 = df4_not_p3['SAH_A'].sum()
 Total_hours_A_NOTX3 = df4_not_p3['Total_hours_A'].sum()
 Eff_A = SAH_A_NOTX3/Total_hours_A_NOTX3
@@ -374,7 +364,7 @@ df_unit_eff['Eff_P_formated'] = df_unit_eff['Eff_P'].apply(lambda x: f"{x:.1%}")
 df_unit_eff['SAH_A_formated'] = df_unit_eff['SAH_A'].apply(lambda x: f"{x:,.0f}")
 df_unit_eff['SAH_P_formated']= df_unit_eff['SAH_P'].apply(lambda x: f"{x:,.0f}")
 
-# Biểu đồ hiệu suất: ẩn xưởng học sinh (cấp xưởng) — student_units khai báo ở phần đầu (dòng ~144)
+# Biểu đồ hiệu suất: loại xưởng học sinh khỏi biểu đồ hiệu suất (dùng chung student_units khai báo ở dòng ~144)
 df_unit_eff_perf = df_unit_eff[~df_unit_eff['Unit'].isin(student_units)]
 
 cols = st.columns(2)
