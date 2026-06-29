@@ -141,8 +141,19 @@ SAH_P = df4['SAH_P'].sum()
 Total_hours_A = df4['Total_hours_A'].sum() 
 Total_hours_P = df4['Total_hours_P'].sum()
 
-# Tính hiệu suất loại bỏ chuyền 23S01, 23S03, 23S05, 23S07, 23S09 là các chuyền của học sinh
+# ============================================================================
+# KHAI BÁO HỌC SINH (loại khỏi tính toán hiệu suất - không dùng để tính thưởng)
+# Hai biến dưới đây quản lý ở CÙNG MỘT CHỖ:
+#   - exclude_lines : cấp CHUYỀN. Danh sách các chuyền học sinh cụ thể.
+#                     Dùng để loại khỏi HIỆU SUẤT TỔNG (Eff_A) qua df4_not_p3.
+#   - student_units : cấp XƯỞNG. Danh sách các xưởng học sinh.
+#                     Dùng để ẩn khỏi BIỂU ĐỒ "Hiệu suất theo xưởng" (df_unit_eff_perf).
+# Lưu ý: 2P03 là xưởng thuần học sinh, gồm đúng các chuyền trong exclude_lines.
+# ============================================================================
 exclude_lines = ['23S01', '23S03', '23S05', '23S07', '23S09']
+student_units = ['2P03']
+
+# Hiệu suất tổng: loại các chuyền học sinh (cấp chuyền)
 df4_not_p3 = df4[~df4['Line'].str.upper().isin(exclude_lines)]
 SAH_A_NOTX3 = df4_not_p3['SAH_A'].sum()
 Total_hours_A_NOTX3 = df4_not_p3['Total_hours_A'].sum()
@@ -183,7 +194,7 @@ def to_excel(df):
         workbook = writer.book
         worksheet = writer.sheets['Summary']
 
-        for i, column in enumerate(df.reset_index().columns): 
+        for i, column in enumerate(df.reset_index().columns):
             col_width = max(df.reset_index()[column].astype(str).map(len).max(), len(str(column))) + 2
             worksheet.set_column(i, i, col_width)
 
@@ -205,7 +216,7 @@ with cols[0]:
     st.info('Sản lượng',icon= "👕" )
     st.metric(label= 'Mục tiêu',value= f'{Qty_P:,.0f}')
     st.metric(label= 'Thực tế',value= f'{Qty_A:,.0f}',delta= f'{(Qty_A-Qty_P):,.0f}')
-    
+
     st.info('Tổng CN May',icon="👩‍💼")
     st.metric(label='Mục tiêu', value= f'{Worker_P:,.0f}')
     st.metric(label='Thực tế', value= f'{Worker_A:,.0f}',delta=f'{(Worker_A-Worker_P):,.0f}')
@@ -213,7 +224,7 @@ with cols[1]:
     st.info('Tổng SAH',icon= "💰" )
     st.metric(label= 'Mục tiêu',value= f'{SAH_P:,.0f}')
     st.metric(label= 'Thực tế',value= f'{SAH_A:,.0f}',delta= f'{(SAH_A-SAH_P):,.0f}')
-    
+
     st.info('Tỉ lệ đi làm',icon="🏃")
     st.metric(label='Mục tiêu', value= f'{Attn_P:,.0%}')
     st.metric(label='Thực tế', value= f'{Attn_A:,.1%}',delta=f'{(Attn_A-Attn_P):,.1%}')
@@ -221,7 +232,7 @@ with cols[2]:
     st.info('Tổng TGLV',icon= "🕗" )
     st.metric(label= 'Mục tiêu',value= f'{Total_hours_P:,.0f}')
     st.metric(label= 'Thực tế',value= f'{Total_hours_A:,.0f}',delta=f'{(Total_hours_A-Total_hours_P):,.0f}')
-    
+
     st.info('Số giờ làm việc',icon= "🕗" )
     st.metric(label= 'Mục tiêu',value= f'{Hour_P:,.1f}')
     st.metric(label= 'Thực tế',value= f'{Hour_A:,.1f}',delta=f'{(Hour_A-Hour_P):,.1f}')
@@ -229,11 +240,11 @@ with cols[3]:
     st.info('Hiệu suất',icon= "📈" )
     st.metric(label= 'Mục tiêu',value= f'{Eff_P:,.1%}')
     st.metric(label= 'Thực tế',value= f'{Eff_A:,.1%}',delta=f'{(Eff_A-Eff_P):,.1%}')
-    
+
     st.info('SAH/CN/Ngày',icon= "💰" )
     st.metric(label= 'Mục tiêu',value= f'{SAH_CN_P:,.1f}')
     st.metric(label= 'Thực tế',value= f'{SAH_CN_A:,.1f}',delta=f'{(SAH_CN_A-SAH_CN_P):,.1f}')
-# df5 = nhóm theo ngày    
+# df5 = nhóm theo ngày
 st.markdown("---")
 df5_not_p3 = df4_not_p3.groupby(by=df4_not_p3['WorkDate']).agg({
 'Qty_A' : 'sum',
@@ -348,12 +359,24 @@ df_unit_eff = df4.groupby(by = ['Unit']).agg({
     'SAH_P' : 'sum',
     'Total_hours_P' : 'sum'
 },axis = 1).reset_index()
-df_unit_eff['Eff_A'] = (df_unit_eff['SAH_A']/df_unit_eff['Total_hours_A'])
+df_unit_eff['Eff_A'] = np.where(
+    df_unit_eff['Total_hours_A'] != 0,
+    df_unit_eff['SAH_A'] / df_unit_eff['Total_hours_A'],
+    0
+)
 df_unit_eff['Eff_A_formated'] = df_unit_eff['Eff_A'].apply(lambda x: f"{x:.1%}")
-df_unit_eff['Eff_P'] = (df_unit_eff['SAH_P']/df_unit_eff['Total_hours_P'])
+df_unit_eff['Eff_P'] = np.where(
+    df_unit_eff['Total_hours_P'] != 0,
+    df_unit_eff['SAH_P'] / df_unit_eff['Total_hours_P'],
+    0
+)
 df_unit_eff['Eff_P_formated'] = df_unit_eff['Eff_P'].apply(lambda x: f"{x:.1%}")
 df_unit_eff['SAH_A_formated'] = df_unit_eff['SAH_A'].apply(lambda x: f"{x:,.0f}")
 df_unit_eff['SAH_P_formated']= df_unit_eff['SAH_P'].apply(lambda x: f"{x:,.0f}")
+
+# Biểu đồ hiệu suất: ẩn xưởng học sinh (cấp xưởng) — student_units khai báo ở phần đầu (dòng ~144)
+df_unit_eff_perf = df_unit_eff[~df_unit_eff['Unit'].isin(student_units)]
+
 cols = st.columns(2)
 with cols[0]:
     fig = go.Figure()
@@ -373,18 +396,18 @@ with cols[0]:
         marker= dict(color = 'red'),
         name="Mục tiêu"
     ))
-    
+
     fig.update_layout(
         title="Tổng SAH theo xưởng",
-        xaxis_title="Xưởng", 
-        yaxis_title="Tổng SAH" 
+        xaxis_title="Xưởng",
+        yaxis_title="Tổng SAH"
     )
 
     max_SAH = max(df_unit_eff['SAH_A'].max(),df_unit_eff['SAH_P'].max()) * 1.2
     fig.update_yaxes(
         range = [0,max_SAH],
         # showticklabels = False
-    )  
+    )
     fig.update_layout(dragmode="pan")
 
     st.plotly_chart(fig,use_container_width=True,config=config)
@@ -392,28 +415,28 @@ with cols[0]:
 with cols[1]:
     fig = go.Figure()
     fig.add_trace(go.Bar(
-        x= df_unit_eff['Unit'],
-        y = df_unit_eff['Eff_A'],
-        text = df_unit_eff['Eff_A_formated'],
+        x= df_unit_eff_perf['Unit'],
+        y = df_unit_eff_perf['Eff_A'],
+        text = df_unit_eff_perf['Eff_A_formated'],
         textposition= 'outside',
         marker=dict(color = 'blue'),
         name = "Thực tế"
     ))
     fig.add_trace(go.Bar(
-        x= df_unit_eff['Unit'],
-        y = df_unit_eff['Eff_P'],
-        text = df_unit_eff['Eff_P_formated'],
+        x= df_unit_eff_perf['Unit'],
+        y = df_unit_eff_perf['Eff_P'],
+        text = df_unit_eff_perf['Eff_P_formated'],
         textposition= 'outside',
         marker= dict(color = 'red'),
         name="Mục tiêu"
     ))
-    
+
     fig.update_layout(
         title="Hiệu suất theo xưởng",
-        xaxis_title="Xưởng", 
-        yaxis_title="Hiệu suất trung bình" 
+        xaxis_title="Xưởng",
+        yaxis_title="Hiệu suất trung bình"
     )
-    max_SAH = max(df_unit_eff['Eff_A'].max(),df_unit_eff['Eff_P'].max()) * 1.2
+    max_SAH = max(df_unit_eff_perf['Eff_A'].max(),df_unit_eff_perf['Eff_P'].max()) * 1.2
     fig.update_yaxes(
         range = [0,max_SAH],
         # showticklabels = False
