@@ -338,7 +338,7 @@ fig.update_xaxes(
 )
 fig.update_layout(
     xaxis_title = 'Ngày',
-    yaxis_title = 'Tổng SAH',
+    yaxis_title = 'Tổng EFF',
     title = "Hiệu suất trung bình theo ngày"
 )
 fig.update_traces(
