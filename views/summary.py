@@ -178,9 +178,10 @@ SAH_P = df4["SAH_P"].sum()
 Total_hours_A = df4["Total_hours_A"].sum()
 Total_hours_P = df4["Total_hours_P"].sum()
 
-# Hiệu suất tổng tính trên df4 (GỒM cả xưởng thực tập).
-Eff_A = SAH_A / Total_hours_A
-
+# Hiệu suất nhà máy (KPI):
+#   - Thực tế (Eff_A): SAH/TGLV KHÔNG TTS  → df_eff_unit
+#   - Mục tiêu (Eff_P): SAH/TGLV CÓ TTS     → df4 (SAH_P, Total_hours_P)
+Eff_A = df_eff_unit["SAH_A"].sum() / df_eff_unit["Total_hours_A"].sum()
 Eff_P = SAH_P / Total_hours_P
 Attn_A = df4["Total_hours_A"].sum() / (df4["WS*Hours_A"]).sum()
 Attn_P = df4["Attn_P"].mean()
@@ -373,10 +374,21 @@ st.plotly_chart(fig, use_container_width=True, config=config)
 # ============================================================
 
 #########
-# Hiệu suất theo ngày: dùng df5_not_p3 (đã loại thực tập)
+# Hiệu suất theo ngày:
+#   - Thực tế (Eff_A): SAH/TGLV KHÔNG TTS  → df5_not_p3
+#   - Mục tiêu (Eff_P): SAH/TGLV CÓ TTS     → df5
 df5_not_p3["Eff_A"] = df5_not_p3["SAH_A"] / df5_not_p3["Total_hours_A"]
-df5_not_p3["Eff_P"] = df5_not_p3["SAH_P"] / df5_not_p3["Total_hours_P"]
-df6 = pd.melt(df5_not_p3, id_vars="WorkDate", value_vars=["Eff_A", "Eff_P"])
+df5["Eff_P"] = df5["SAH_P"] / df5["Total_hours_P"]
+# chuẩn hóa khóa ghép về cùng kiểu datetime (tránh lỗi merge do df5_not_p3 là date, df5 là datetime)
+df5_not_p3["WorkDate"] = pd.to_datetime(df5_not_p3["WorkDate"])
+df5["WorkDate"] = pd.to_datetime(df5["WorkDate"])
+df_eff_day = pd.merge(
+    df5_not_p3[["WorkDate", "Eff_A"]],
+    df5[["WorkDate", "Eff_P"]],
+    on="WorkDate",
+    how="outer",
+)
+df6 = pd.melt(df_eff_day, id_vars="WorkDate", value_vars=["Eff_A", "Eff_P"])
 df6 = df6.sort_values("WorkDate")
 df6 = df6.rename(columns={"value": "Hiệu suất", "variable": "Chỉ số"})
 df6 = df6.replace(
