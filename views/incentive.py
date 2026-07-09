@@ -24,6 +24,7 @@ st.markdown(
 )
 fty =['NT1','NT2']
 nha_may = st.sidebar.multiselect("Chọn nhà máy",options=fty,default=fty)
+nha_may_str = ', '.join(f"'{item}'" for item in nha_may)
 reports = ['Tổng hợp','Công nhân Cắt','Công nhân may','Công nhân QC1','Công nhân Là','Công nhân QC2','Công nhân đóng gói','Công nhân NDC','Công nhân phụ','Quản lý']
 bao_cao = st.sidebar.selectbox("Chọn báo cáo",options= reports,index=0)
 
@@ -40,59 +41,60 @@ if bao_cao == 'Tổng hợp':
     df_nhom_cat = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV as TONG_TGLV,TONG_THUONG,SO_NGAY,N'Cắt' as NHOM
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_CAT WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_CAT WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_may = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,TONG_THUONG,SO_NGAY,'May' as NHOM
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_CN_MAY WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)}) 
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_CN_MAY WHERE NHA_MAY in ({nha_may_str}) 
                            """)
     
     df_nhom_qc1 = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,TONG_THUONG,SO_NGAY,N'QC1' as NHOM
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC1 WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC1 WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_la = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,TONG_THUONG,SO_NGAY,N'Là' as NHOM
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_LA WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_LA WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_qc2 = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,TONG_THUONG,SO_NGAY,N'QC2' as NHOM
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC2 WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC2 WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_hoan_thien = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV AS TONG_TGLV,TONG_THUONG,SO_NGAY,N'Hoàn thiện' as NHOM
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_DONG_GOI WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_DONG_GOI WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_NDC = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV AS TONG_TGLV,TONG_THUONG,SO_NGAY,N'NDC' as NHOM
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_NDC WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_NDC WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_phu = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV AS TONG_TGLV,TONG_THUONG,SO_NGAY,N'CN Phụ' as NHOM
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_PHU WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_PHU WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df_nhom_quan_ly = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV AS TONG_TGLV,TONG_THUONG,SO_NGAY,N'Quản lý' as NHOM
-                           FROM TONG_HOP_TGLV_TONG_THUONG_QUAN_LY WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_QUAN_LY WHERE NHA_MAY in ({nha_may_str})
                            """)
     
     df = pd.concat([df_nhom_cat,df_nhom_may,df_nhom_qc1,df_nhom_la,df_nhom_qc2,df_nhom_hoan_thien,df_nhom_NDC,df_nhom_phu,df_nhom_quan_ly])
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: (x[:1] + 'NDC') if 'NDC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+        else (x[:1] + 'NDC') if 'NDC' in x \
         else (x[:1] + 'TNC') if 'TNC' in x \
         else (x[:1] + 'P0' + x[1:2]))
     
@@ -226,9 +228,10 @@ if bao_cao == 'Công nhân Cắt':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV as TONG_TGLV,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_CAT WHERE NHA_MAY in ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_CAT WHERE NHA_MAY in ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     df['CHUC_VU'] = df['CHUC_VU'].str.replace(r'thợ cắt|Thợ Cắt','Thợ cắt',regex=True)
@@ -329,7 +332,7 @@ if bao_cao == 'Công nhân Cắt':
     st.markdown("---")
     
     df_nhom = get_data(DB='INCENTIVE',query=f"""
-                           SELECT * FROM THUONG_NHOM_CAT_HANG_NGAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) AND NHOM NOT LIKE '%99'
+                           SELECT * FROM THUONG_NHOM_CAT_HANG_NGAY WHERE NHA_MAY IN ({nha_may_str}) AND NHOM NOT LIKE '%99'
                            ORDER BY NGAY,NHOM
                            """)
     df_nhom['NAM'] = df_nhom['NGAY'].apply(lambda x: x[:4])
@@ -409,7 +412,7 @@ if bao_cao == 'Công nhân Cắt':
         st.dataframe(df_nhom)
 
 if bao_cao == 'Công nhân may':
-    df_cn_may = get_data(DB='INCENTIVE',query=f"SELECT * FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_CN_MAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) ORDER BY CHUYEN")
+    df_cn_may = get_data(DB='INCENTIVE',query=f"SELECT * FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_CN_MAY WHERE NHA_MAY IN ({nha_may_str}) ORDER BY CHUYEN")
     
     df_cn_may['XUONG'] = df_cn_may['CHUYEN'].str[0:1] + 'P0' + df_cn_may['CHUYEN'].str[1:2]
     df_cn_may['SAH'] = df_cn_may['EFF_TB']*df_cn_may['TONG_TGLV']
@@ -640,9 +643,10 @@ if bao_cao == 'Công nhân QC1':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,EFF_TB,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC1 WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC1 WHERE NHA_MAY IN ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     nam = df['NAM'].sort_values(ascending=False).unique()
@@ -749,7 +753,7 @@ if bao_cao == 'Công nhân QC1':
     st.markdown("---")
     
     df_nhom = get_data(DB='INCENTIVE',query=f"""
-                           SELECT * FROM THUONG_NHOM_QC1_HANG_NGAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) AND NHOM NOT LIKE '%99'
+                           SELECT * FROM THUONG_NHOM_QC1_HANG_NGAY WHERE NHA_MAY IN ({nha_may_str}) AND NHOM NOT LIKE '%99'
                            ORDER BY NGAY,NHOM
                            """)
     df_nhom['NAM'] = df_nhom['NGAY'].apply(lambda x: x[:4])
@@ -827,9 +831,10 @@ if bao_cao == 'Công nhân Là':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,EFF_TB,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_LA WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_LA WHERE NHA_MAY IN ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     df['CHUC_VU'] = df['CHUC_VU'].str.replace(r'là','Là',regex =True)
@@ -937,7 +942,7 @@ if bao_cao == 'Công nhân Là':
     
     cols2 = st.columns(len(nha_may))
     df_nhom = get_data(DB='INCENTIVE',query=f"""
-                           SELECT * FROM THUONG_NHOM_LA_HANG_NGAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) AND CHUYEN NOT LIKE '%99'
+                           SELECT * FROM THUONG_NHOM_LA_HANG_NGAY WHERE NHA_MAY IN ({nha_may_str}) AND CHUYEN NOT LIKE '%99'
                            ORDER BY NGAY,CHUYEN
                            """)
     df_nhom['NAM'] = df_nhom['NGAY'].apply(lambda x: x[:4])
@@ -1018,10 +1023,11 @@ if bao_cao == 'Công nhân QC2':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TONG_TGLV,EFF_TB,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC2 WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TIEN_THUONG_HIEU_SUAT_TGLV_QC2 WHERE NHA_MAY IN ({nha_may_str})
                            """)
     df['CHUC_VU']=df['CHUC_VU'].str.replace(r'là','Là',regex=True)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     nam = df['NAM'].sort_values(ascending=False).unique()
@@ -1125,7 +1131,7 @@ if bao_cao == 'Công nhân QC2':
     st.markdown("---")
     
     df_nhom = get_data(DB='INCENTIVE',query=f"""
-                           SELECT * FROM THUONG_NHOM_QC2_HANG_NGAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) AND NHOM NOT LIKE '%99'
+                           SELECT * FROM THUONG_NHOM_QC2_HANG_NGAY WHERE NHA_MAY IN ({nha_may_str}) AND NHOM NOT LIKE '%99'
                            ORDER BY NGAY,NHOM
                            """)
     df_nhom['NAM'] = df_nhom['NGAY'].apply(lambda x: x[:4])
@@ -1205,9 +1211,10 @@ if bao_cao == 'Công nhân đóng gói':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV as TONG_TGLV,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_DONG_GOI WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_DONG_GOI WHERE NHA_MAY IN ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     nam = df['NAM'].sort_values(ascending=False).unique()
@@ -1300,7 +1307,7 @@ if bao_cao == 'Công nhân đóng gói':
     st.markdown("---")
     
     df_nhom = get_data(DB='INCENTIVE',query=f"""
-                           SELECT * FROM THUONG_NHOM_DONG_GOI_HANG_NGAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) AND NHOM NOT LIKE '%99'
+                           SELECT * FROM THUONG_NHOM_DONG_GOI_HANG_NGAY WHERE NHA_MAY IN ({nha_may_str}) AND NHOM NOT LIKE '%99'
                            ORDER BY NGAY,NHOM
                            """)
     df_nhom['NAM'] = df_nhom['NGAY'].apply(lambda x: x[:4])
@@ -1380,9 +1387,10 @@ if bao_cao == 'Công nhân NDC':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV as TONG_TGLV,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_NDC WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_NDC WHERE NHA_MAY IN ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     nam = df['NAM'].sort_values(ascending=False).unique()
@@ -1479,7 +1487,7 @@ if bao_cao == 'Công nhân NDC':
     st.markdown("---")
     
     df_nhom = get_data(DB='INCENTIVE',query=f"""
-                           SELECT * FROM THUONG_NHOM_NDC_HANG_NGAY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)}) AND NHOM NOT LIKE '%99'
+                           SELECT * FROM THUONG_NHOM_NDC_HANG_NGAY WHERE NHA_MAY IN ({nha_may_str}) AND NHOM NOT LIKE '%99'
                            ORDER BY NGAY,NHOM
                            """)
     df_nhom['NAM'] = df_nhom['NGAY'].apply(lambda x: x[:4])
@@ -1527,9 +1535,10 @@ if bao_cao == 'Công nhân phụ':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV as TONG_TGLV,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_PHU WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_CN_PHU WHERE NHA_MAY IN ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     nam = df['NAM'].sort_values(ascending=False).unique()
@@ -1628,9 +1637,10 @@ if bao_cao == 'Quản lý':
     df = get_data(DB='INCENTIVE',query=f"""
                            SELECT NHA_MAY,NAM,THANG,MST,HO_TEN,CHUYEN,CHUC_VU,
                            TGLV as TONG_TGLV,TONG_THUONG,SO_NGAY
-                           FROM TONG_HOP_TGLV_TONG_THUONG_QUAN_LY WHERE NHA_MAY IN ({', '.join(f'\'{item}\'' for item in nha_may)})
+                           FROM TONG_HOP_TGLV_TONG_THUONG_QUAN_LY WHERE NHA_MAY IN ({nha_may_str})
                            """)
-    df['XUONG'] = df['CHUYEN'].apply(lambda x: x[:1] +'TNC' if 'TNC' in x \
+    df['XUONG'] = df['CHUYEN'].apply(lambda x: None if pd.isna(x) \
+                                    else x[:1] +'TNC' if 'TNC' in x \
                                     else x[:1] + 'NDC' if 'NDC' in x \
                                         else x[:1] + 'P0' + x[1:2])
     nam = df['NAM'].sort_values(ascending=False).unique()
