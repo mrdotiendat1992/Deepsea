@@ -149,20 +149,30 @@ df_ppc = df_ppc[(df_ppc["Unit"].isin(sel_unit)) & (df_ppc["Style_P"].isin(sel_st
 # CHUYỀN THỰC TẬP (date-aware):
 #   - TỪ 01/06/2026  : toàn bộ chuyền 23 (unit 2P03);  25S01 là chuyền thường
 #   - TRƯỚC 01/06/2026: 25S01 là chuyền thực tập;       chuyền 23 là chuyền thường
+#   - TỪ 10/08/2026  : 4 chuyền 23S01/23S03/23S05/23S09 NGỪNG là TTS (theo y/c GĐ),
+#                      được tính vào hiệu suất nhà máy như chuyền thường;
+#                      các chuyền 23 còn lại VẪN là TTS như cũ.
 # Chỉ dùng cho: (1) heatmap thực tập;  (2) LOẠI khỏi biểu đồ "Hiệu suất theo xưởng".
 # Mọi KPI/biểu đồ khác (kể cả "Tổng SAH theo xưởng") vẫn TÍNH cả thực tập.
 # ============================================================
 CUTOFF_INTERN = pd.Timestamp("2026-06-01")
+CUTOFF_23_OUT = pd.Timestamp("2026-08-10")  # mốc 4 chuyền 23 dưới đây thôi TTS
+LINES_23_OUT = ["23S01", "23S03", "23S05", "23S09"]
 
 
 def intern_mask(d):
     wd = pd.to_datetime(
         d["WorkDate"]
     )  # chuẩn hóa cho cả df4 (datetime) lẫn df_ppc (date)
-    line2 = d["Line"].astype(str).str[:2]
-    return ((wd >= CUTOFF_INTERN) & (line2 == "23")) | (
-            (wd < CUTOFF_INTERN) & (d["Line"] == "25S01")
+    line = d["Line"].astype(str)
+    line2 = line.str[:2]
+    # chuyền 23 là TTS, TRỪ 4 chuyền đã thôi TTS kể từ CUTOFF_23_OUT
+    is_23_intern = (
+            (wd >= CUTOFF_INTERN)
+            & (line2 == "23")
+            & ~((wd >= CUTOFF_23_OUT) & (line.isin(LINES_23_OUT)))
     )
+    return is_23_intern | ((wd < CUTOFF_INTERN) & (line == "25S01"))
 
 
 df_intern = df4[intern_mask(df4)].copy()  # cho heatmap thực tập
