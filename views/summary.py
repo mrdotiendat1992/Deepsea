@@ -645,24 +645,74 @@ df_line_link_anh = pd.pivot(
 df_line_SAM = pd.pivot(df4, index=["Line"], columns=["WorkDate"], values="SAM")
 # Ghép các bảng pivot vào thành bảng chiều dùng làm customdata
 
-df_line_eff_pivot = df_line_eff_pivot.fillna(0)
-base_index = df_line_style.index
+# ============================================================
+# Chuẩn hóa tất cả pivot về cùng index + cùng columns
+# ============================================================
 
-df_line_SAH = df_line_SAH.reindex(base_index)
-df_line_link_anh = df_line_link_anh.reindex(base_index)
-df_line_SAM = df_line_SAM.reindex(base_index)
-df_line_eff_pivot = df_line_eff_pivot.reindex(base_index)
-df_line_eff_pivot_ppc = df_line_eff_pivot_ppc.reindex(base_index)
-df_line_SAH_ppc = df_line_SAH_ppc.reindex(base_index)
+df_line_eff_pivot = df_line_eff_pivot.fillna(0)
+
+# Lấy index và columns chuẩn từ df_line_style
+base_index = df_line_style.index
+base_columns = df_line_style.columns
+
+# Reindex cả dòng và cột
+df_line_style = df_line_style.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+df_line_SAH = df_line_SAH.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+df_line_link_anh = df_line_link_anh.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+df_line_SAM = df_line_SAM.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+df_line_eff_pivot = df_line_eff_pivot.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+df_line_eff_pivot_ppc = df_line_eff_pivot_ppc.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+df_line_SAH_ppc = df_line_SAH_ppc.reindex(
+    index=base_index,
+    columns=base_columns
+)
+
+# Giá trị mặc định cho các ô trống
+df_line_style = df_line_style.fillna("")
+df_line_SAH = df_line_SAH.fillna(0)
+df_line_link_anh = df_line_link_anh.fillna("")
+df_line_SAM = df_line_SAM.fillna(0)
+df_line_eff_pivot = df_line_eff_pivot.fillna(0)
+df_line_eff_pivot_ppc = df_line_eff_pivot_ppc.fillna(0)
+df_line_SAH_ppc = df_line_SAH_ppc.fillna(0)
+
+# ============================================================
+# Tạo customdata
+# ============================================================
+
 customdata = np.dstack(
     [
         df_line_style.values,
         df_line_SAH.values,
         df_line_link_anh.values,
-        df_line_SAM,
-        df_line_eff_pivot,
-        df_line_eff_pivot_ppc,
-        df_line_SAH_ppc,
+        df_line_SAM.values,
+        df_line_eff_pivot.values,
+        df_line_eff_pivot_ppc.values,
+        df_line_SAH_ppc.values,
     ]
 )
 
