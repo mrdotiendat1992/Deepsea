@@ -928,19 +928,58 @@ df_line_SAH_ppc_intern = df_line_SAH_ppc_intern.fillna(0)
 
 df_actual_sah_intern = df_line_SAH_intern.astype(float)
 df_plan_sah_intern = df_line_SAH_ppc_intern.astype(float)
+
+# Chuẩn hóa tên cột về string
 df_actual_sah_intern.columns = df_actual_sah_intern.columns.astype(str)
 df_plan_sah_intern.columns = df_plan_sah_intern.columns.astype(str)
-df_plan_sah_intern = df_plan_sah_intern.loc[
-    df_actual_sah_intern.index, df_actual_sah_intern.columns
-]
-df_diff_sah_intern = df_actual_sah_intern.subtract(df_plan_sah_intern, fill_value=0)
+
+# Đồng bộ index + columns
+# Nếu PPC không có ngày/chuyền tương ứng thì tạo ô NaN
+df_plan_sah_intern = df_plan_sah_intern.reindex(
+    index=df_actual_sah_intern.index,
+    columns=df_actual_sah_intern.columns,
+    fill_value=0
+)
+
+# Đảm bảo các ô thiếu dữ liệu = 0
+df_actual_sah_intern = df_actual_sah_intern.fillna(0)
+df_plan_sah_intern = df_plan_sah_intern.fillna(0)
+
+# Tính chênh lệch
+df_diff_sah_intern = (
+    df_actual_sah_intern - df_plan_sah_intern
+)
 
 vmin_sah = df_diff_sah_intern.min().min()
 vmax_sah = df_diff_sah_intern.max().max()
 
 padding_sah = max(abs(vmin_sah), abs(vmax_sah)) * 1.1
 
-customdata2 = np.dstack([df_line_SAH_intern.values, df_line_SAH_ppc_intern])
+# Đồng bộ Actual và PPC SAH thực tập
+df_line_SAH_intern = df_line_SAH_intern.copy()
+df_line_SAH_ppc_intern = df_line_SAH_ppc_intern.copy()
+
+# Chuẩn hóa tên cột
+df_line_SAH_intern.columns = df_line_SAH_intern.columns.astype(str)
+df_line_SAH_ppc_intern.columns = df_line_SAH_ppc_intern.columns.astype(str)
+
+# Đồng bộ index + columns theo Actual
+df_line_SAH_ppc_intern = df_line_SAH_ppc_intern.reindex(
+    index=df_line_SAH_intern.index,
+    columns=df_line_SAH_intern.columns,
+    fill_value=0
+)
+
+# Xử lý NaN
+df_line_SAH_intern = df_line_SAH_intern.fillna(0)
+df_line_SAH_ppc_intern = df_line_SAH_ppc_intern.fillna(0)
+
+# Tạo customdata
+customdata2 = np.dstack([
+    df_line_SAH_intern.values,
+    df_line_SAH_ppc_intern.values
+])
+
 
 fig = px.imshow(
     df_diff_sah_intern.values,
