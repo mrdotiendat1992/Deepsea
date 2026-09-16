@@ -1,0 +1,38 @@
+# ============================================================================
+#  DeepSea - che do DEV (sua code la trang tu cap nhat, khong build lai)
+#  Dat file nay tai:  D:\PHANMEM_NT\Deepsea\
+#
+#  Chay:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#  Hoac:  bash nt.sh dev ds
+#
+#  KHAC BAN PRODUCTION:
+#    - mount ca thu muc code vao container -> sua file la Streamlit tu nap lai
+#    - bat lai file watcher (production tat di cho do ton CPU)
+#    - khong chay nen, log hien thang ra man hinh, Ctrl+C la dung
+# ============================================================================
+
+services:
+  deepsea:
+    volumes:
+      # Mount TOAN BO thu muc code. Ghi de len ban da COPY vao image luc build.
+      - .:/app
+      # Tru thu muc thu vien Python - neu khong, thu muc rong tren host se
+      # che mat cho da cai trong image va container chet ngay khi khoi dong.
+      - /app/__pycache__
+    environment:
+      # Streamlit theo doi file va tu nap lai khi co thay doi
+      STREAMLIT_SERVER_FILE_WATCHER_TYPE: auto
+      STREAMLIT_SERVER_RUN_ON_SAVE: "true"
+    command:
+      - sh
+      - -c
+      - >
+        exec streamlit run reports.py
+        --server.port=${DEEPSEA_PORT:-100}
+        --server.address=0.0.0.0
+        --server.headless=true
+        --server.fileWatcherType=auto
+        --server.runOnSave=true
+        --server.enableCORS=false
+        --server.enableXsrfProtection=false
+        --browser.gatherUsageStats=false

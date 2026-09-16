@@ -1,0 +1,49 @@
+# ============================================================================
+#  .dockerignore cho DeepSea
+#
+#  NGUYEN TAC: chi loai nhung thu KHONG CAN luc chay.
+#  Da doi chieu tung dong COPY trong Dockerfile - `COPY . .` can giu lai:
+#    reports.py  load_data.py  views/  core/  db/  helper/
+#    csv/  excel/  icon/  images/  .streamlit/
+#    logo_blue.png  logo_white.png  fty.png  gadm41_VNM_3.json
+#  Loai nham mot trong so do thi loi chi lo ra luc nguoi dung bam vao trang
+#  tuong ung, khong phai luc build.
+# ============================================================================
+
+# Lich su git - 72 MB, nang nhat trong repo, khong dung luc chay
+.git
+.gitignore
+
+# Moi truong ao tren may Windows - khong dung duoc trong container Linux
+deepsea_env/
+venv/
+.venv/
+
+# Mat khau that - KHONG bao gio dua vao image.
+# Bien moi truong truyen qua docker-compose, xem .env.example
+.env
+core/.env
+
+# File cua Windows
+*.bat
+terminal.txt
+
+# requirements.txt goc la UTF-16, Dockerfile dung requirements.docker.txt.
+# Loai ra cho khoi ai do cai nham file sai ma hoa.
+requirements.txt
+
+# Rac Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Rac he dieu hanh / trinh soan thao
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Tai lieu
+README.md

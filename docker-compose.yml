@@ -1,0 +1,66 @@
+# ============================================================================
+#  DeepSea - docker compose (PRODUCTION)
+#  Dat file nay tai:  D:\PHANMEM_NT\Deepsea\
+#  Yeu cau: Docker Engine >= 24, Docker Compose v2 (khong con key "version:")
+#
+#  Chay:  docker compose up -d --build
+#  Xem :  http://<IP-server>:100
+#  Log :  docker compose logs -f
+#  Dung:  docker compose down
+# ============================================================================
+
+name: nt-deepsea
+
+services:
+
+  deepsea:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
+    image: namthuan/deepsea:1.0.0
+    container_name: nt-deepsea
+    restart: unless-stopped
+
+    # Cong trong container = cong host, giong 4 project kia.
+    # 100 la dung cong ma run.bat cua repo dang dung, nen dia chi truy cap
+    # khong doi so voi luc chay bang run.bat tren may Windows.
+    ports:
+      - "${DEEPSEA_PORT:-100}:${DEEPSEA_PORT:-100}"
+
+    environment:
+      TZ: ${TZ:-Asia/Ho_Chi_Minh}
+      DEEPSEA_PORT: ${DEEPSEA_PORT:-100}
+
+      # ---- Bien cho load_data.py (hau het cac trang dung duong nay) --------
+      SERVER: ${DB_SERVER}
+      # LUU Y: bien trong container BUOC PHAI ten la UID vi load_data.py goi
+      # os.getenv('UID'). Nhung trong file .env thi dat ten khac (DB_UID) -
+      # ly do: UID la bien co san cua shell (bash dat san UID=1000...), neu
+      # file .env cung dat UID= thi tuy cach goi ma compose co the lay nham
+      # gia tri cua shell. Doi ten o phia .env la het duong nham lan.
+      UID: ${DB_UID}
+      PASSWORD: ${DB_PASSWORD}
+
+      # ---- Bien cho core/config.py (chi trang Ke hoach / PPC.py dung) ------
+      # Cung mot may chu, cung tai khoan - chi khac ten bien vi hai file
+      # duoc viet o hai thoi diem khac nhau. Dien cung gia tri la dung.
+      HOST: ${DB_SERVER}
+      USERNAME_DB: ${DB_UID}
+      PASSWORD_DB: ${DB_PASSWORD}
+      DATABASE_1: ${DATABASE_1:-DW}
+
+    volumes:
+      # Anh nhan vien: views/summary.py doc tu "images/png/<ma>.png".
+      # Mount ra ngoai de them anh nhan vien moi chi can copy file vao thu muc,
+      # KHONG phai build lai image.
+      - ./images:/app/images
+      # File du lieu tuyen xe, thinh thoang cap nhat
+      - ./csv:/app/csv
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"

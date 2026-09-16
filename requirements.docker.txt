@@ -1,0 +1,141 @@
+# ============================================================================
+#  requirements.docker.txt  -  danh sach goi cho container DeepSea
+#
+#  SINH RA TU requirements.txt CUA REPO, khac dung 2 cho:
+#
+#   1. DOI MA HOA UTF-16 -> UTF-8.
+#      File goc do `pip freeze > requirements.txt` chay trong PowerShell nen
+#      ra UTF-16 (co BOM). Tren Linux `pip install -r` doc file do se loi
+#      hoac hieu sai ten goi. Day la cai bay chac chan gap khi build Docker,
+#      kiem tra bang:  file requirements.txt
+#
+#   2. PIN VERSION cho 2 goi con thieu o file goc:
+#        streamlit_js_eval  -> ==0.1.7
+#        XlsxWriter         -> ==3.2.0
+#      Khong pin thi moi lan build lai co the ra ban khac -> "hom qua chay
+#      duoc, hom nay hong" ma khong ai doi gi.
+#
+#  KHI THEM GOI MOI: them vao requirements.txt nhu binh thuong, roi chay
+#      iconv -f UTF-16 -t UTF-8 requirements.txt | tr -d '\r' > requirements.docker.txt
+#  va cheo lai 2 dong pin o cuoi.
+#
+#  Da doi chieu: KHONG co goi nao chi chay duoc tren Windows (pywin32...),
+#  nen danh sach nay dung nguyen duoc tren Linux.
+# ============================================================================
+
+altair==5.5.0
+annotated-types==0.7.0
+anyio==4.8.0
+anywidget==0.9.13
+asttokens==3.0.0
+attrs==24.3.0
+beautifulsoup4==4.12.3
+blinker==1.9.0
+bqplot==0.12.44
+branca==0.8.1
+cachetools==5.5.1
+certifi==2024.12.14
+charset-normalizer==3.4.1
+click==8.1.8
+colorama==0.4.6
+colour==0.1.5
+comm==0.2.2
+contourpy==1.3.1
+cycler==0.12.1
+decorator==5.1.1
+duckdb==1.1.3
+executing==2.1.0
+fastapi==0.115.6
+filelock==3.17.0
+folium==0.19.4
+fonttools==4.55.4
+gdown==5.2.0
+geojson==3.2.0
+geopandas==1.0.1
+gitdb==4.0.12
+GitPython==3.1.44
+greenlet==3.1.1
+idna==3.10
+ipyevents==2.0.2
+ipyfilechooser==0.6.0
+ipyleaflet==0.19.2
+ipython==8.31.0
+ipytree==0.2.2
+ipyvue==1.11.2
+ipyvuetify==1.10.0
+ipywidgets==8.1.5
+jedi==0.19.2
+Jinja2==3.1.5
+jsonschema==4.23.0
+jsonschema-specifications==2024.10.1
+jupyter-leaflet==0.19.2
+jupyterlab_widgets==3.0.13
+kiwisolver==1.4.8
+leafmap==0.42.7
+markdown-it-py==3.0.0
+MarkupSafe==3.0.2
+matplotlib==3.10.0
+matplotlib-inline==0.1.7
+mdurl==0.1.2
+narwhals==1.23.0
+numpy==2.2.2
+packaging==24.2
+pandas==2.2.3
+parso==0.8.4
+pillow==11.1.0
+plotly==5.24.1
+prompt_toolkit==3.0.50
+protobuf==5.29.3
+psutil==6.1.1
+psygnal==0.11.1
+pure_eval==0.2.3
+pyarrow==19.0.0
+pydantic==2.10.5
+pydantic_core==2.27.2
+pydeck==0.9.1
+Pygments==2.19.1
+pyodbc==5.2.0
+pyogrio==0.10.0
+pyparsing==3.2.1
+pyproj==3.7.0
+pyshp==2.3.1
+PySocks==1.7.1
+pystac==1.11.0
+pystac-client==0.8.5
+python-box==7.3.2
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+pytz==2024.2
+pyxlsb==1.0.10
+referencing==0.36.1
+requests==2.32.3
+rich==13.9.4
+rpds-py==0.22.3
+scooby==0.10.0
+shapely==2.0.6
+six==1.17.0
+smmap==5.0.2
+sniffio==1.3.1
+soupsieve==2.6
+SQLAlchemy==2.0.37
+stack-data==0.6.3
+starlette==0.41.3
+streamlit==1.41.1
+streamlit_folium==0.24.0
+tenacity==9.0.0
+toml==0.10.2
+tornado==6.4.2
+tqdm==4.67.1
+traitlets==5.14.3
+traittypes==0.2.1
+typing_extensions==4.12.2
+tzdata==2025.1
+urllib3==2.3.0
+watchdog==6.0.0
+wcwidth==0.2.13
+whitebox==2.3.5
+whiteboxgui==2.3.0
+widgetsnbextension==4.0.13
+xyzservices==2025.1.0
+streamlit_js_eval==0.1.7
+XlsxWriter==3.2.0
